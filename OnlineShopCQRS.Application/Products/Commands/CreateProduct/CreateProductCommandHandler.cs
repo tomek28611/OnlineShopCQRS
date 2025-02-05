@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using OnlineShopCQRS.Application.Products.Queries.Dto;
 using OnlineShopCQRS.Domain.Entity;
+using OnlineShopCQRS.Domain.Exceptions;
 using OnlineShopCQRS.Domain.Repository;
 
 namespace OnlineShopCQRS.Application.Products.Commands.CreateProduct
@@ -19,6 +20,15 @@ namespace OnlineShopCQRS.Application.Products.Commands.CreateProduct
         }
         public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(request.Title))
+            {
+                throw new ProductCreationException("Product title cannot be empty.");
+            }
+
+            if (request.Price <= 0)
+            {
+                throw new ProductCreationException("Product price must be greater than zero.");
+            }
             var productEntity = new ProductEntity()
             {
                 Title = request.Title,

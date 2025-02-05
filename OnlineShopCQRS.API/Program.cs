@@ -1,3 +1,4 @@
+using OnlineShopCQRS.API.Middleware;
 using OnlineShopCQRS.Application;
 using OnlineShopCQRS.Infrastructure;
 
@@ -19,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -2,6 +2,7 @@
 
 using MediatR;
 using OnlineShopCQRS.Domain.Entity;
+using OnlineShopCQRS.Domain.Exceptions;
 using OnlineShopCQRS.Domain.Repository;
 
 namespace OnlineShopCQRS.Application.Products.Commands.UpdateProduct
@@ -17,6 +18,15 @@ namespace OnlineShopCQRS.Application.Products.Commands.UpdateProduct
          
         public async Task<int> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(request.Title))
+            {
+                throw new ProductCreationException("Product title cannot be empty.");
+            }
+
+            if (request.Price <= 0)
+            {
+                throw new ProductCreationException("Product price must be greater than zero.");
+            }
             var UpdateProductEntity = new ProductEntity()
             {
                 Id = request.Id,

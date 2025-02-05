@@ -2,6 +2,7 @@
 using AutoMapper;
 using MediatR;
 using OnlineShopCQRS.Application.Products.Queries.Dto;
+using OnlineShopCQRS.Domain.Exceptions;
 using OnlineShopCQRS.Domain.Repository;
 
 namespace OnlineShopCQRS.Application.Products.Queries.GetProductById
@@ -19,6 +20,10 @@ namespace OnlineShopCQRS.Application.Products.Queries.GetProductById
         public async Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetProductByIdAsync(request.ProductId);
+            if (product == null)
+            {
+                throw new NotFoundException($"Product ID {request.ProductId} not exist.");
+            }
             return _mapper.Map<ProductDto>(product);
         }
     }

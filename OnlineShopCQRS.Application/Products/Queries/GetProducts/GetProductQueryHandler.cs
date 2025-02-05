@@ -2,6 +2,7 @@
 using AutoMapper;
 using MediatR;
 using OnlineShopCQRS.Application.Products.Queries.Dto;
+using OnlineShopCQRS.Domain.Exceptions;
 using OnlineShopCQRS.Domain.Repository;
 
 namespace OnlineShopCQRS.Application.Products.Queries.GetProducts
@@ -18,9 +19,12 @@ namespace OnlineShopCQRS.Application.Products.Queries.GetProducts
         public async Task<List<ProductDto>> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
             var products = await _productRepository.GetAllProductsAsync();
-            var productList = _mapper.Map<List<ProductDto>>(products);
+            if (products == null || !products.Any())
+            {
+                throw new NotFoundException("No products available.");
+            }
 
-            return productList;
+            return _mapper.Map<List<ProductDto>>(products);
         }
     }
 }
