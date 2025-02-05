@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OnlineShopCQRS.Domain.Entity;
 using OnlineShopCQRS.Domain.Repository;
 using OnlineShopCQRS.Infrastructure.Data;
@@ -9,40 +7,43 @@ namespace OnlineShopCQRS.Infrastructure.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly OnlineShopDbContext _context;
+        private readonly IDbContextFactory<OnlineShopDbContext> _contextFactory;
 
-
-        public UserRepository(OnlineShopDbContext context)
+        public UserRepository(IDbContextFactory<OnlineShopDbContext> contextFactory)
         {
-            _context = context;
-
+            _contextFactory = contextFactory;
         }
 
         public async Task<UserEntity> CreateUserAsync(UserEntity user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
             return user;
         }
 
         public async Task<int> DeleteUserAsync(int id)
         {
-            return await _context.Users.Where(x => x.Id == id).ExecuteDeleteAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Users.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task<List<UserEntity>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Users.ToListAsync();
         }
 
         public async Task<UserEntity> GetUserByIdAsync(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> UpdateUserAsync(int id, UserEntity user)
         {
-            var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var userToUpdate = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (userToUpdate == null) return 0;
 
             foreach (var property in typeof(UserEntity).GetProperties())
@@ -54,8 +55,8 @@ namespace OnlineShopCQRS.Infrastructure.Repository
                 }
             }
 
-            _context.Users.Update(userToUpdate);
-            return await _context.SaveChangesAsync();
+            context.Users.Update(userToUpdate);
+            return await context.SaveChangesAsync();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace OnlineShopCQRS.Infrastructure
             (this IServiceCollection services, IConfiguration configuration)
 
         {
-            services.AddDbContext<OnlineShopDbContext>(options =>
+            services.AddDbContextFactory<OnlineShopDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")) 
             );
 

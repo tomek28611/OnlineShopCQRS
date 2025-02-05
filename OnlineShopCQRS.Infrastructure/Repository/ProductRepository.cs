@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OnlineShopCQRS.Domain.Entity;
 using OnlineShopCQRS.Domain.Repository;
 using OnlineShopCQRS.Infrastructure.Data;
@@ -8,40 +7,43 @@ namespace OnlineShopCQRS.Infrastructure.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly OnlineShopDbContext _context;
-      
+        private readonly IDbContextFactory<OnlineShopDbContext> _contextFactory;
 
-        public ProductRepository(OnlineShopDbContext context)
+        public ProductRepository(IDbContextFactory<OnlineShopDbContext> contextFactory)
         {
-            _context = context;
-           
+            _contextFactory = contextFactory;
         }
 
         public async Task<ProductEntity> CreateProductAsync(ProductEntity product)
         {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            await context.Products.AddAsync(product);
+            await context.SaveChangesAsync();
             return product;
         }
 
         public async Task<int> DeleteProductAsync(int id)
         {
-           return await _context.Products.Where(x => x.Id == id).ExecuteDeleteAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Products.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task<List<ProductEntity>> GetAllProductsAsync()
         {
-            return await _context.Products.ToListAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Products.ToListAsync();
         }
 
         public async Task<ProductEntity> GetProductByIdAsync(int id)
         {
-            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Products.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> UpdateProductAsync(int id, ProductEntity product)
         {
-            var productToUpdate = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var productToUpdate = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (productToUpdate == null) return 0;
 
             foreach (var property in typeof(ProductEntity).GetProperties())
@@ -53,8 +55,8 @@ namespace OnlineShopCQRS.Infrastructure.Repository
                 }
             }
 
-            _context.Products.Update(productToUpdate);
-            return await _context.SaveChangesAsync();
+            context.Products.Update(productToUpdate);
+            return await context.SaveChangesAsync();
         }
     }
 }
