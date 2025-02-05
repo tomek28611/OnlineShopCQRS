@@ -56,24 +56,5 @@ namespace OnlineShopCQRS.Infrastructure.Repository
             _context.Products.Update(productToUpdate);
             return await _context.SaveChangesAsync();
         }
-
-
-        //public async Task<int> UpdateProductAsync(int id, ProductEntity product)
-        //{
-        //    return await _context.Products
-        //        .Where(x => x.Id == id)
-        //        .ExecuteUpdateAsync(y => y
-        //          .SetProperty(p => p.Title, product.Title)
-        //          .SetProperty(p => p.Description, product.Description)
-        //          .SetProperty(p => p.FullDesc, product.FullDesc)
-        //          .SetProperty(p => p.Price, product.Price)
-        //          .SetProperty(p => p.Discount, product.Discount)
-        //          .SetProperty(p => p.ImageName, product.ImageName)
-        //          .SetProperty(p => p.Qty, product.Qty)
-        //          .SetProperty(p => p.Tags, product.Tags)
-        //          .SetProperty(p => p.VideoUrl, product.VideoUrl)
-
-        //        );
-        //}
     }
 }

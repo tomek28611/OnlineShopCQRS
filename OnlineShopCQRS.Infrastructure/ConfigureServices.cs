@@ -19,6 +19,7 @@ namespace OnlineShopCQRS.Infrastructure
             );
 
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             return services;
 
         }

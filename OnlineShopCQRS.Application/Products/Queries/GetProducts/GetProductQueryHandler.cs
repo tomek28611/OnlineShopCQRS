@@ -7,7 +7,7 @@ using OnlineShopCQRS.Domain.Repository;
 
 namespace OnlineShopCQRS.Application.Products.Queries.GetProducts
 {
-    internal class GetProductQueryHandler : IRequestHandler<GetProductQuery, List<ProductDto>>
+    public class GetProductQueryHandler : IRequestHandler<GetProductQuery, List<ProductDto>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;

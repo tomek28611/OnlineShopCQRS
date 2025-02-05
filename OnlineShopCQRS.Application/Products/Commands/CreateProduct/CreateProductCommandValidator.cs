@@ -8,8 +8,8 @@ namespace OnlineShopCQRS.Application.Products.Commands.CreateProduct
         public CreateProductCommandValidator()
         {
             RuleFor(v => v.Title)
-              .NotEmpty().WithMessage("Name is required.")
-              .MaximumLength(200).WithMessage("Name must not exceed 200 characters.");
+              .NotEmpty().WithMessage("Title is required.")
+              .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
             RuleFor(v => v.Description)
                .NotEmpty().WithMessage("Description is required.");
